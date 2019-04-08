@@ -36,7 +36,7 @@ async function start(fields) {
 
   log('info', 'Saving data to Cozy')
   await saveBills(bills, fields, {
-    identifiers: ['github', 'github.com'],
+    identifiers: ['github.com'],
     contentType: 'application/pdf'
   })
 }
