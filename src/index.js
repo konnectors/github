@@ -40,18 +40,14 @@ function authenticate(username, password) {
   return signin({
     url: `${baseUrl}/login`,
     formSelector: 'form',
-    formData: { 
-      "login": username, 
-      "password": password 
+    formData: {
+      login: username,
+      password: password
     },
     validate: (statusCode, $, fullResponse) => {
       log('info', `Login status code is: ${statusCode}`)
-      log(
-        'info',
-        fullResponse.request.uri.href
-      
-      )
-      return fullResponse.request.uri.href === 'https://github.com/';
+      log('info', fullResponse.request.uri.href)
+      return fullResponse.request.uri.href === 'https://github.com/'
     }
   })
 }
@@ -66,7 +62,7 @@ function parseDocuments($) {
       moment: {
         sel: 'td.date time',
         attr: 'title',
-        parse: date => moment(date, "YYYY-MM-DD HH:mm:ss")
+        parse: date => moment(date, 'YYYY-MM-DD HH:mm:ss')
       },
       amount: {
         sel: 'td.amount',
@@ -84,7 +80,9 @@ function parseDocuments($) {
     ...doc,
     date: doc.moment.toDate(),
     currency: '$',
-    filename: `${doc.moment.format("YYYY-MM-DD_HH:mm:ss")}_${VENDOR}_$${doc.amount.toFixed(2)}.pdf`,
+    filename: `${doc.moment.format(
+      'YYYY-MM-DD_HH:mm:ss'
+    )}_${VENDOR}_$${doc.amount.toFixed(2)}.pdf`,
     vendor: VENDOR,
     metadata: {
       importDate: new Date(),
