@@ -71,7 +71,13 @@ function parseBills($, selector) {
       },
       amount: {
         sel: 'td.amount',
-        parse: amount => parseFloat(amount.replace('$', '').replace(',', '').trim())
+        parse: amount =>
+          parseFloat(
+            amount
+              .replace('$', '')
+              .replace(',', '')
+              .trim()
+          )
       },
       fileurl: {
         sel: 'td.receipt a',
