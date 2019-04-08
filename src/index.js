@@ -25,13 +25,17 @@ async function start(fields) {
   log('info', 'Successfully logged in')
 
   log('info', 'Fetching the list of documents')
-  const billingHistoryPath = fields.organization ? `/organizations/${fields.organization}/billing/history` : '/account/billing/history'
+  const billingHistoryPath = fields.organization
+    ? `/organizations/${fields.organization}/billing/history`
+    : '/account/billing/history'
   const $ = await request(`${baseUrl}${billingHistoryPath}`)
   log('info', 'Parsing list of documents')
-  const documents = await parseDocuments($)
+  const succeededBills = await parseBills($, '.payment-history .succeeded')
+  const refundedBills = await parseBills($, '.payment-history .refunded')
+  const bills = [].concat(succeededBills, refundedBills)
 
   log('info', 'Saving data to Cozy')
-  await saveBills(documents, fields, {
+  await saveBills(bills, fields, {
     identifiers: ['github', 'github.com'],
     contentType: 'application/pdf'
   })
@@ -53,8 +57,8 @@ function authenticate(username, password) {
   })
 }
 
-function parseDocuments($) {
-  const docs = scrape(
+function parseBills($, selector) {
+  const bills = scrape(
     $,
     {
       id: {
@@ -75,15 +79,15 @@ function parseDocuments($) {
         parse: href => `${baseUrl}${href}`
       }
     },
-    '.payment-history .succeeded'
+    selector
   )
-  return docs.map(doc => ({
-    ...doc,
-    date: doc.moment.toDate(),
+  return bills.map(bill => ({
+    ...bill,
+    date: bill.moment.toDate(),
     currency: '$',
-    filename: `${doc.moment.format(
+    filename: `${bill.moment.format(
       'YYYY-MM-DD_HH:mm:ss'
-    )}_${VENDOR}_$${doc.amount.toFixed(2)}.pdf`,
+    )}_${VENDOR}_$${bill.amount.toFixed(2)}.pdf`,
     vendor: VENDOR,
     metadata: {
       importDate: new Date(),
