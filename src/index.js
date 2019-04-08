@@ -25,7 +25,8 @@ async function start(fields) {
   log('info', 'Successfully logged in')
 
   log('info', 'Fetching the list of documents')
-  const $ = await request(`${baseUrl}/account/billing/history`)
+  const billingHistoryPath = fields.organization ? `/organizations/${fields.organization}/billing/history` : '/account/billing/history'
+  const $ = await request(`${baseUrl}${billingHistoryPath}`)
   log('info', 'Parsing list of documents')
   const documents = await parseDocuments($)
 
