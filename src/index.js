@@ -4,7 +4,8 @@ const {
   signin,
   scrape,
   saveBills,
-  log
+  log,
+  utils
 } = require('cozy-konnector-libs')
 
 const request = requestFactory({
@@ -64,10 +65,10 @@ function parseBills($, selector) {
       id: {
         sel: 'td.id code'
       },
-      moment: {
+      date: {
         sel: 'td.date time',
         attr: 'title',
-        parse: date => moment(date, 'YYYY-MM-DD HH:mm:ss')
+        parse: date => moment(date, 'YYYY-MM-DD HH:mm:ss').toDate()
       },
       amount: {
         sel: 'td.amount',
@@ -89,11 +90,8 @@ function parseBills($, selector) {
   )
   return bills.map(bill => ({
     ...bill,
-    date: bill.moment.toDate(),
     currency: '$',
-    filename: `${bill.moment.format(
-      'YYYY-MM-DD_HH:mm:ss'
-    )}_${VENDOR}_$${bill.amount.toFixed(2)}.pdf`,
+    filename: `${utils.formatDate(bill.date)}_${VENDOR}_$${bill.amount.toFixed(2)}.pdf`,
     vendor: VENDOR,
     metadata: {
       importDate: new Date(),
