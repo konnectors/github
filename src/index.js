@@ -91,7 +91,9 @@ function parseBills($, selector) {
   return bills.map(bill => ({
     ...bill,
     currency: '$',
-    filename: `${utils.formatDate(bill.date)}_${VENDOR}_$${bill.amount.toFixed(2)}.pdf`,
+    filename: `${utils.formatDate(bill.date)}_${VENDOR}_$${bill.amount.toFixed(
+      2
+    )}.pdf`,
     vendor: VENDOR,
     metadata: {
       importDate: new Date(),
