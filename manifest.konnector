@@ -5,10 +5,10 @@
   "language": "node",
   "icon": "GitHub-Mark.png",
   "slug": "github",
-  "source": "git@github.com:sebprunier/cozy-konnector-github.git",
-  "editor": "Cozy",
+  "source": "git@github.com:konnectors/github.git",
+  "editor": "sebprunier",
   "vendor_link": "https://github.com",
-  "categories": ["other"],
+  "categories": ["online_services"],
   "fields": {
     "login": {
       "type": "text"
