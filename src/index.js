@@ -30,7 +30,7 @@ async function start(fields) {
   log('info', 'Successfully logged in')
 
   log('info', 'Fetching the list of documents')
-  const billingHistoryPath = fields.organization
+  const billingHistoryPath = (await checkOrga(fields))
     ? `/organizations/${fields.organization}/billing/history`
     : '/account/billing/history'
   const $ = await request(`${baseUrl}${billingHistoryPath}`)
@@ -44,6 +44,29 @@ async function start(fields) {
     identifiers: ['github.com'],
     contentType: 'application/pdf'
   })
+}
+
+async function checkOrga({ login, organization }) {
+  if (!organization) return true
+
+  log(
+    'info',
+    'Checking if the specified organization is accessible with this account'
+  )
+  const $ = await request(`${baseUrl}/${login}`)
+  const orgas = Array.from($('a[data-hovercard-type=organization]')).map(el =>
+    $(el)
+      .attr('href')
+      .slice(1)
+  )
+  const result = orgas.includes(organization)
+
+  if (!result)
+    log(
+      'warn',
+      `Could not find the ${organization} organization, using the default billing address`
+    )
+  return result
 }
 
 function authenticate(username, password) {
