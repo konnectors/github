@@ -54,7 +54,9 @@ async function checkOrga({ login, organization }) {
     'Checking if the specified organization is accessible with this account'
   )
   const $ = await request(`${baseUrl}/${login}`)
-  const orgas = Array.from($('a[data-hovercard-type=organization]')).map(el =>
+  const orgas = Array.from(
+    $('a[data-hovercard-type=organization][itemprop=follows]')
+  ).map(el =>
     $(el)
       .attr('href')
       .slice(1)
