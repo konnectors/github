@@ -47,7 +47,7 @@ async function start(fields) {
 }
 
 async function checkOrga({ login, organization }) {
-  if (!organization) return true
+  if (!organization) return false
 
   log(
     'info',
