@@ -3,11 +3,12 @@ node_js:
 - '8'
 env:
   global:
-  - GH_USER_EMAIL="travis@example.org"
-  - GH_USER_NAME="cozy-bot"
+  - MATTERMOST_CHANNEL=teamconnecteurs
   - DEPLOY_REPOSITORY="git@github.com:konnectors/github.git"
   # REGISTRY_TOKEN
   - secure: dLUpW+CpZjWbgd7YXYwWAmfMXqmHgJkwtj0/sD5fweXEe4zjJCElF61aFfie048oAwjtrfqHYbAT3SNPw5Dc1tAgx84UzCJPm+p6m/DXY9Y8JQkfFE2f+MwOu+cVuXBSSZS0pd99ItStIOPHs5s7wt42Y9XtxatzeLsxYceD9/7Ecd5gqMYxt6gljy0KxpnxUghZP5IhF41htqRJx/wGguTUuBN0UsP0oUV1K4NwU+RRDDG9WFIzYoUKe+u3uYLZOXoNA6rGsDZddB6Z1TqK3aIB46gkkAXLw7Ux2rKDkk9J+1o1JDmsubRq9WeOQTfYdMJmvZf21xWuRzB/BcgG++0Znw75yLXL6Nek+ohKa7Q0H/rc66ZSbQVd516AOE5FUIMubjB2BGLXQYjvA5JnlfVbnMS2VbJHI1rrxlTpSPhRHNMVPL7usDAhQqCShtlK9PuPPdWE+Hj7p3ru23pTf8ZHrrCcR7p8BU8ZSHNG3Sd8+IjEM9b8kk1ikjWyGyf1JvylytVWatbmn4BDqERuSYENi/7gz6LcUzciB/vfkXpiCsch5gUv+rfr6Q5+LZ9JqyJwxWJn77LLEfrP/WOKHXFIn8zCItOfUm341fefHTFFYvdMJ6hDmuBfE2K3kQnEn0Xr2rZvAQzNWNZTCnx8f/ZzI3u52yxPtWXpI4ky+GA=
+  # MATTERMOST_HOOK_URL
+  - secure: ZceJFDUT0tWjN16zKTF94QHtSGTfhgFbJN7eC06QGoGAnBh40D4ta157XRa2Ggh93xWKRK8vIk7DqN96NjVcCggzd2XXkhe3IoQmeg7kw1So3dfhH6+6S0Zkj+l9RuVXPdKGxFa/jQSR4zAnhaAS3N9PzG04kwEZiJ1Psb5voIPv6sAYsSZmi0uqgKk0ZZsjlCP3VvFsjxZ3Gm2RS8kbhrpFnixtAAE0Hs3klh9KEF5jO/nLltTy80HMTj1I9GuFN52AV2YhvrJv1EK4SufjNvs9U6x8hhE7lgEtCzMsefY/v4C2iqGrUOSHCZEM6k22c4ZVy7dUWyzUp7zUbWhcFJKKBbhSsJ7FotkpsEaBv8KpWEZjuiZeBBnB2LoCBKWSl9flvYC03MHAgt5WO0WixVLqLEJn5iZlpTswDgfRGKsiNIU/U4KnZYLyAXI576uRqkvebXmY55DjQrfWDGL7B5iGdX3VbTcqsPybFGG4n35POdGdSO7/fMtH4deGmwbNYSEjsYYYC3uMJJNgOjCZywslu0yQDEJmVxanVmwqGp66ldmapJrPopgRedq+apP/UDt7V35xsl8LQiFq8hlRobdRS+ybWspIPFaVNKR+WZHV28QopMDD0gQVN+X9xWB9LwKi7og1hyg9vy3jcT+zE7eNEuGK7wb7Lgb6hNdTavs=
 cache:
   yarn: true
   directories:
@@ -19,7 +20,7 @@ branches:
 script:
 - yarn lint
 - yarn build
-- yarn run check
+# - yarn run check
 deploy:
 - provider: script
   skip-cleanup: true
@@ -28,7 +29,7 @@ deploy:
     branch: master
 - provider: script
   skip-cleanup: true
-  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
+  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish --postpublish mattermost
   on:
     tags: true
 before_install:

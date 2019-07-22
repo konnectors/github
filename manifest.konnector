@@ -3,7 +3,7 @@
   "name": "Github",
   "type": "konnector",
   "language": "node",
-  "icon": "GitHub-Mark.png",
+  "icon": "icon.svg",
   "slug": "github",
   "source": "git@github.com:konnectors/github.git",
   "editor": "sebprunier",
