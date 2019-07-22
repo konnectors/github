@@ -42,7 +42,9 @@ async function start(fields) {
   log('info', 'Saving data to Cozy')
   await saveBills(bills, fields, {
     identifiers: ['github.com'],
-    contentType: 'application/pdf'
+    contentType: 'application/pdf',
+    sourceAccount: this._account._id,
+    sourceAccountIdentifier: fields.login
   })
 }
 
