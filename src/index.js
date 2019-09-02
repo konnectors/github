@@ -47,7 +47,8 @@ class GithubConnector extends CookieKonnector {
       identifiers: ['github.com'],
       contentType: 'application/pdf',
       sourceAccount: this.accountId,
-      sourceAccountIdentifier: fields.login
+      sourceAccountIdentifier: fields.login,
+      fileIdAttributes: ['id']
     })
   }
 
