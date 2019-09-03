@@ -21,10 +21,38 @@ class GithubConnector extends CookieKonnector {
     }
   }
 
+  async handle2FA(fields) {
+    await this.deactivateAutoSuccessfulLogin()
+    // to run this connector in standalone mode, just add "otp" field with your otp code
+    let code = fields.otp
+    if (!code) {
+      code = await this.waitForTwoFaCode()
+    }
+    await this.signin({
+      url: `${baseUrl}/sessions/two-factor`,
+      formSelector: 'form',
+      formData: {
+        otp: code
+      },
+      validate: (statusCode, $, fullResponse) => {
+        return fullResponse.request.uri.href === 'https://github.com/'
+      }
+    })
+    await this.notifySuccessfulLogin()
+  }
+
   async fetch(fields) {
     if (!(await this.testSession())) {
       log('info', 'Authenticating ...')
-      await this.authenticate(fields.login, fields.password)
+      try {
+        await this.authenticate(fields.login, fields.password)
+      } catch (err) {
+        if (err.message === '2FA') {
+          await this.handle2FA(fields)
+        } else {
+          throw err
+        }
+      }
       log('info', 'Successfully logged in')
       await this.saveSession()
     }
@@ -88,6 +116,15 @@ class GithubConnector extends CookieKonnector {
       validate: (statusCode, $, fullResponse) => {
         log('info', `Login status code is: ${statusCode}`)
         log('info', fullResponse.request.uri.href)
+
+        if (
+          fullResponse.request.uri.href ===
+          'https://github.com/sessions/two-factor'
+        ) {
+          log('info', `2FA required`)
+          throw new Error('2FA')
+        }
+
         return fullResponse.request.uri.href === 'https://github.com/'
       }
     })
@@ -135,7 +172,7 @@ class GithubConnector extends CookieKonnector {
 }
 
 const connector = new GithubConnector({
-  // debug: 'json',
+  // debug: 'simple',
   cheerio: true,
   json: false
 })
