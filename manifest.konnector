@@ -1,14 +1,16 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Github",
   "type": "konnector",
   "language": "node",
-  "icon": "GitHub-Mark.png",
+  "icon": "icon.svg",
   "slug": "github",
   "source": "git@github.com:konnectors/github.git",
   "editor": "sebprunier",
   "vendor_link": "https://github.com",
-  "categories": ["online_services"],
+  "categories": [
+    "online_services"
+  ],
   "fields": {
     "login": {
       "type": "text"
@@ -43,14 +45,19 @@
     },
     "accounts": {
       "type": "io.cozy.accounts",
-      "verbs": ["GET"]
+      "verbs": [
+        "GET"
+      ]
     }
   },
   "developer": {
     "name": "Sébastien Prunier",
     "url": "https://github.com/sebprunier"
   },
-  "langs": ["fr", "en"],
+  "langs": [
+    "fr",
+    "en"
+  ],
   "locales": {
     "fr": {
       "short_description": "Récupère vos factures Github",
