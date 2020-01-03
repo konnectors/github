@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '8'
+- '12'
 env:
   global:
   - DEPLOY_REPOSITORY="git@github.com:konnectors/github.git"
@@ -19,7 +19,6 @@ branches:
 script:
 - yarn lint
 - yarn build
-# - yarn run check
 deploy:
 - provider: script
   skip-cleanup: true
