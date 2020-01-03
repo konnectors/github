@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.1.1",
   "name": "Github",
   "type": "konnector",
   "language": "node",
@@ -58,7 +58,7 @@
   "locales": {
     "fr": {
       "short_description": "Récupère vos factures Github",
-      "long_description": "Récupère vos factures Github (compte personnel ou organisation). Les comptes en double authentification ne sont pas encore gérés.",
+      "long_description": "Récupère vos factures Github (compte personnel ou organisation). La double authentification est aussi gérée.",
       "permissions": {
         "bank operations": {
           "description": "Utilisé pour relier les factures à des operations bancaires"
@@ -76,7 +76,7 @@
     },
     "en": {
       "short_description": "Fetch your Github invoices",
-      "long_description": "Fetch your Github invoices (personal account or organization). 2FA accounts cannot be used at the moment.",
+      "long_description": "Fetch your Github invoices (personal account or organization). 2FA can also be used.",
       "permissions": {
         "bank operations": {
           "description": "Required to link bank operations to bills"
