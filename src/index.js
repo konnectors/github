@@ -32,7 +32,7 @@ class GithubConnector extends CookieKonnector {
       url: `${baseUrl}/sessions/two-factor`,
       formSelector: 'form',
       formData: {
-        otp: code
+        app_otp: code
       },
       validate: (statusCode, $, fullResponse) => {
         return fullResponse.request.uri.href === 'https://github.com/'
@@ -90,11 +90,7 @@ class GithubConnector extends CookieKonnector {
     const $ = await this.request(`${baseUrl}/${login}`)
     const orgas = Array.from(
       $('a[data-hovercard-type=organization][itemprop=follows]')
-    ).map(el =>
-      $(el)
-        .attr('href')
-        .slice(1)
-    )
+    ).map(el => $(el).attr('href').slice(1))
     const result = orgas.includes(organization)
 
     if (!result)
@@ -118,8 +114,9 @@ class GithubConnector extends CookieKonnector {
         log('info', fullResponse.request.uri.href)
 
         if (
-          fullResponse.request.uri.href ===
-          'https://github.com/sessions/two-factor'
+          fullResponse.request.uri.href.includes(
+            'https://github.com/sessions/two-factor'
+          )
         ) {
           log('info', `2FA required`)
           throw new Error('2FA')
@@ -145,12 +142,7 @@ class GithubConnector extends CookieKonnector {
         amount: {
           sel: 'td.amount',
           parse: amount =>
-            parseFloat(
-              amount
-                .replace('$', '')
-                .replace(',', '')
-                .trim()
-            )
+            parseFloat(amount.replace('$', '').replace(',', '').trim())
         },
         fileurl: {
           sel: 'td.receipt a',
