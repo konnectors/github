@@ -93,6 +93,17 @@
       }
     }
   },
+  "qualification_labels": [
+    "other_invoice"
+  ],
+  "features": [
+    "LOGIN_OK",
+    "METADATA_DEDUP",
+    "CARBON_COPY",
+    "DOC_QUALIFICATION_V2",
+    "SENTRY_V2",
+    "2FA"
+  ],
   "banksTransactionRegExp": "\\bgithub.com\\b",
   "manifest_version": "2"
 }

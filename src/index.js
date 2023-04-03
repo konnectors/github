@@ -1,9 +1,18 @@
 process.env.SENTRY_DSN =
   process.env.SENTRY_DSN ||
-  'https://33a142994ff042268d35af26f5238820@sentry.cozycloud.cc/121'
+  'https://1cbfaf19eab146e3a321dc43676dfb51@errors.cozycloud.cc/53'
 
-const { CookieKonnector, scrape, log, utils } = require('cozy-konnector-libs')
+const {
+  CookieKonnector,
+  scrape,
+  log,
+  utils,
+  cozyClient
+} = require('cozy-konnector-libs')
 const moment = require('moment')
+
+const models = cozyClient.new.models
+const { Qualification } = models.document
 
 const VENDOR = 'Github'
 const baseUrl = 'https://github.com'
@@ -32,7 +41,7 @@ class GithubConnector extends CookieKonnector {
       url: `${baseUrl}/sessions/two-factor`,
       formSelector: 'form',
       formData: {
-        otp: code
+        app_otp: code
       },
       validate: (statusCode, $, fullResponse) => {
         return fullResponse.request.uri.href === 'https://github.com/'
@@ -90,11 +99,7 @@ class GithubConnector extends CookieKonnector {
     const $ = await this.request(`${baseUrl}/${login}`)
     const orgas = Array.from(
       $('a[data-hovercard-type=organization][itemprop=follows]')
-    ).map(el =>
-      $(el)
-        .attr('href')
-        .slice(1)
-    )
+    ).map(el => $(el).attr('href').slice(1))
     const result = orgas.includes(organization)
 
     if (!result)
@@ -118,8 +123,9 @@ class GithubConnector extends CookieKonnector {
         log('info', fullResponse.request.uri.href)
 
         if (
-          fullResponse.request.uri.href ===
-          'https://github.com/sessions/two-factor'
+          fullResponse.request.uri.href.includes(
+            'https://github.com/sessions/two-factor'
+          )
         ) {
           log('info', `2FA required`)
           throw new Error('2FA')
@@ -145,12 +151,7 @@ class GithubConnector extends CookieKonnector {
         amount: {
           sel: 'td.amount',
           parse: amount =>
-            parseFloat(
-              amount
-                .replace('$', '')
-                .replace(',', '')
-                .trim()
-            )
+            parseFloat(amount.replace('$', '').replace(',', '').trim())
         },
         fileurl: {
           sel: 'td.receipt a',
@@ -166,7 +167,16 @@ class GithubConnector extends CookieKonnector {
       filename: `${utils.formatDate(
         bill.date
       )}_${VENDOR}_$${bill.amount.toFixed(2)}.pdf`,
-      vendor: VENDOR
+      vendor: VENDOR,
+      fileAttributes: {
+        metadata: {
+          contentAuthor: 'github.com',
+          issueDate: utils.formatDate(new Date()),
+          datetimeLabel: 'issuDate',
+          carbonCopy: true,
+          qualification: Qualification.getByLabel('other_invoice')
+        }
+      }
     }))
   }
 }
